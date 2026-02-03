@@ -34,17 +34,17 @@
     .tabs {
       display: flex;
       gap: 4px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       background: #16213e;
-      border-radius: 8px;
+      border-radius: 4px;
       padding: 4px;
     }
 
     .tab {
       flex: 1;
-      padding: 8px 4px;
-      border: none;
-      border-radius: 6px;
+      padding: 6px 4px;
+      border: 1px solid transparent;
+      border-radius: 4px;
       font-size: 11px;
       font-weight: 500;
       cursor: pointer;
@@ -58,8 +58,9 @@
     }
 
     .tab.active {
-      background: #00d4ff;
-      color: #1a1a2e;
+      background: rgba(0, 212, 255, 0.15);
+      color: #00d4ff;
+      border: 1px solid #00d4ff;
     }
 
     /* Tab content */
@@ -140,16 +141,16 @@
     /* Input group */
     .input-group {
       display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: 6px;
+      margin-bottom: 10px;
     }
 
     input[type="number"] {
       flex: 1;
-      padding: 10px 12px;
+      padding: 8px 10px;
       border: 1px solid #333;
-      border-radius: 6px;
-      font-size: 14px;
+      border-radius: 4px;
+      font-size: 13px;
       background: #16213e;
       color: #eaeaea;
       outline: none;
@@ -175,10 +176,10 @@
     }
 
     button {
-      padding: 10px 16px;
+      padding: 8px 14px;
       border: none;
-      border-radius: 6px;
-      font-size: 14px;
+      border-radius: 4px;
+      font-size: 13px;
       font-weight: 500;
       cursor: pointer;
       transition: background-color 0.2s, transform 0.1s;
@@ -189,19 +190,23 @@
     }
 
     .btn-add {
+      background: transparent;
+      color: #00d4ff;
+      border: 1.5px solid #00d4ff;
+      transition: all 0.2s ease;
+    }
+
+    .btn-add:hover:not(:disabled) {
       background: #00d4ff;
       color: #1a1a2e;
     }
 
-    .btn-add:hover {
-      background: #00b8e6;
-    }
-
     .btn-add:disabled {
-      background: #333;
-      color: #666;
+      opacity: 0.5;
       cursor: not-allowed;
       transform: none;
+      border-color: #555;
+      color: #555;
     }
 
     /* Ports list */
@@ -214,10 +219,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 12px;
+      padding: 6px 10px;
       background: #16213e;
-      border-radius: 6px;
-      margin-bottom: 6px;
+      border-radius: 4px;
+      margin-bottom: 4px;
     }
 
     .port-item:last-child {
@@ -253,10 +258,10 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 12px;
-      padding: 10px 12px;
+      margin-bottom: 10px;
+      padding: 8px 10px;
       background: #16213e;
-      border-radius: 6px;
+      border-radius: 4px;
     }
 
     .delay-config label {
@@ -299,27 +304,72 @@
 
     /* Feature colors */
     .tab[data-tab="cache"] { }
-    .tab[data-tab="cors"].active { background: #ff9f43; }
-    .tab[data-tab="csp"].active { background: #ee5a24; }
-    .tab[data-tab="delay"].active { background: #a55eea; }
+    .tab[data-tab="cors"].active {
+      background: rgba(255, 159, 67, 0.15);
+      color: #ff9f43;
+      border: 1px solid #ff9f43;
+    }
+    .tab[data-tab="csp"].active {
+      background: rgba(238, 90, 36, 0.15);
+      color: #ee5a24;
+      border: 1px solid #ee5a24;
+    }
+    .tab[data-tab="delay"].active {
+      background: rgba(138, 103, 196, 0.15);
+      color: #8a67c4;
+      border: 1px solid #8a67c4;
+    }
 
     .feature-cors .section-title,
     .feature-cors .port-number { color: #ff9f43; }
     .feature-csp .section-title,
     .feature-csp .port-number { color: #ee5a24; }
     .feature-delay .section-title,
-    .feature-delay .port-number { color: #a55eea; }
+    .feature-delay .port-number { color: #8a67c4; }
 
-    .feature-cors .btn-add { background: #ff9f43; }
-    .feature-cors .btn-add:hover { background: #e68a2e; }
-    .feature-csp .btn-add { background: #ee5a24; }
-    .feature-csp .btn-add:hover { background: #d14d1e; }
-    .feature-delay .btn-add { background: #a55eea; }
-    .feature-delay .btn-add:hover { background: #8e4fd1; }
+    .feature-cors .btn-add {
+      background: transparent;
+      color: #ff9f43;
+      border-color: #ff9f43;
+    }
+    .feature-cors .btn-add:hover:not(:disabled) {
+      background: #ff9f43;
+      color: #1a1a2e;
+    }
+    .feature-csp .btn-add {
+      background: transparent;
+      color: #ee5a24;
+      border-color: #ee5a24;
+    }
+    .feature-csp .btn-add:hover:not(:disabled) {
+      background: #ee5a24;
+      color: #1a1a2e;
+    }
+    .feature-delay .btn-add {
+      background: transparent;
+      color: #8a67c4;
+      border-color: #8a67c4;
+    }
+    .feature-delay .btn-add:hover:not(:disabled) {
+      background: #8a67c4;
+      color: #1a1a2e;
+    }
 
     .feature-cors .toggle input:checked + .toggle-slider { background-color: #ff9f43; }
     .feature-csp .toggle input:checked + .toggle-slider { background-color: #ee5a24; }
-    .feature-delay .toggle input:checked + .toggle-slider { background-color: #a55eea; }
+    .feature-delay .toggle input:checked + .toggle-slider { background-color: #8a67c4; }
+
+    /* Delay disabled state */
+    .feature-delay.disabled .delay-config,
+    .feature-delay.disabled .input-group {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .feature-delay.disabled input,
+    .feature-delay.disabled .btn-add {
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body>

@@ -125,8 +125,12 @@ async function handleAddCachePort() {
 }
 
 elements.cacheAddBtn.addEventListener('click', handleAddCachePort);
+elements.cacheAddBtn.disabled = true;
 elements.cachePortInput.addEventListener('keypress', e => {
   if (e.key === 'Enter') handleAddCachePort();
+});
+elements.cachePortInput.addEventListener('input', () => {
+  elements.cacheAddBtn.disabled = validatePort(elements.cachePortInput.value) === null;
 });
 
 elements.cachePortsList.addEventListener('click', async e => {
@@ -169,8 +173,12 @@ elements.corsToggle.addEventListener('change', async () => {
 });
 
 elements.corsAddBtn.addEventListener('click', handleAddCorsPort);
+elements.corsAddBtn.disabled = true;
 elements.corsPortInput.addEventListener('keypress', e => {
   if (e.key === 'Enter') handleAddCorsPort();
+});
+elements.corsPortInput.addEventListener('input', () => {
+  elements.corsAddBtn.disabled = validatePort(elements.corsPortInput.value) === null;
 });
 
 elements.corsPortsList.addEventListener('click', async e => {
@@ -213,8 +221,12 @@ elements.cspToggle.addEventListener('change', async () => {
 });
 
 elements.cspAddBtn.addEventListener('click', handleAddCspPort);
+elements.cspAddBtn.disabled = true;
 elements.cspPortInput.addEventListener('keypress', e => {
   if (e.key === 'Enter') handleAddCspPort();
+});
+elements.cspPortInput.addEventListener('input', () => {
+  elements.cspAddBtn.disabled = validatePort(elements.cspPortInput.value) === null;
 });
 
 elements.cspPortsList.addEventListener('click', async e => {
@@ -228,11 +240,21 @@ elements.cspPortsList.addEventListener('click', async e => {
 
 // ==================== DELAY ====================
 
+function updateDelayVisualState(enabled) {
+  const delayTab = document.getElementById('delay-tab');
+  if (enabled) {
+    delayTab.classList.remove('disabled');
+  } else {
+    delayTab.classList.add('disabled');
+  }
+}
+
 async function loadDelaySettings() {
   const settings = await browser.runtime.sendMessage({ action: 'getDelaySettings' });
   elements.delayToggle.checked = settings.enabled;
   elements.delayMsInput.value = settings.delayMs || '';
   renderPorts(elements.delayPortsList, settings.ports, 'removeDelayPort');
+  updateDelayVisualState(settings.enabled);
 }
 
 async function handleAddDelayPort() {
@@ -253,8 +275,10 @@ async function handleAddDelayPort() {
 }
 
 elements.delayToggle.addEventListener('change', async () => {
-  await browser.runtime.sendMessage({ action: 'setDelayEnabled', enabled: elements.delayToggle.checked });
-  showMessage(`Network delay ${elements.delayToggle.checked ? 'enabled' : 'disabled'}`, 'success');
+  const enabled = elements.delayToggle.checked;
+  await browser.runtime.sendMessage({ action: 'setDelayEnabled', enabled });
+  updateDelayVisualState(enabled);
+  showMessage(`Network delay ${enabled ? 'enabled' : 'disabled'}`, 'success');
 });
 
 let delayMsTimeout = null;
@@ -268,8 +292,12 @@ elements.delayMsInput.addEventListener('input', () => {
 });
 
 elements.delayAddBtn.addEventListener('click', handleAddDelayPort);
+elements.delayAddBtn.disabled = true;
 elements.delayPortInput.addEventListener('keypress', e => {
   if (e.key === 'Enter') handleAddDelayPort();
+});
+elements.delayPortInput.addEventListener('input', () => {
+  elements.delayAddBtn.disabled = validatePort(elements.delayPortInput.value) === null;
 });
 
 elements.delayPortsList.addEventListener('click', async e => {
