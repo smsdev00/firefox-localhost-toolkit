@@ -1,0 +1,43 @@
+[
+  {
+    "_comment": "Base rules file - dynamic rules are managed by background.js",
+    "_note": "This file serves as documentation for the rule structure",
+    "_example_rule": {
+      "id": 1000,
+      "priority": 1,
+      "action": {
+        "type": "modifyHeaders",
+        "responseHeaders": [
+          {
+            "header": "Cache-Control",
+            "operation": "set",
+            "value": "no-cache, no-store, must-revalidate"
+          },
+          {
+            "header": "Pragma",
+            "operation": "set",
+            "value": "no-cache"
+          },
+          {
+            "header": "Expires",
+            "operation": "set",
+            "value": "0"
+          }
+        ]
+      },
+      "condition": {
+        "urlFilter": "|http://localhost:3000/*",
+        "resourceTypes": [
+          "main_frame",
+          "sub_frame",
+          "stylesheet",
+          "script",
+          "image",
+          "font",
+          "xmlhttprequest",
+          "other"
+        ]
+      }
+    }
+  }
+]

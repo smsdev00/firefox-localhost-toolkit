@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Localhost Dev Tools</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      width: 320px;
+      max-height: 500px;
+      overflow-y: auto;
+      padding: 16px;
+      background: #1a1a2e;
+      color: #eaeaea;
+    }
+
+    h1 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #00d4ff;
+      text-align: center;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      background: #16213e;
+      border-radius: 8px;
+      padding: 4px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 8px 4px;
+      border: none;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      background: transparent;
+      color: #888;
+      transition: all 0.2s;
+    }
+
+    .tab:hover {
+      color: #eaeaea;
+    }
+
+    .tab.active {
+      background: #00d4ff;
+      color: #1a1a2e;
+    }
+
+    /* Tab content */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Section header with toggle */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #eaeaea;
+    }
+
+    .section-description {
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    /* Toggle switch */
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #333;
+      transition: 0.2s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #888;
+      transition: 0.2s;
+      border-radius: 50%;
+    }
+
+    .toggle input:checked + .toggle-slider {
+      background-color: #00d4ff;
+    }
+
+    .toggle input:checked + .toggle-slider:before {
+      transform: translateX(20px);
+      background-color: #1a1a2e;
+    }
+
+    /* Input group */
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    input[type="number"] {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid #333;
+      border-radius: 6px;
+      font-size: 14px;
+      background: #16213e;
+      color: #eaeaea;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="number"]:focus {
+      border-color: #00d4ff;
+    }
+
+    input[type="number"]::placeholder {
+      color: #666;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .btn-add {
+      background: #00d4ff;
+      color: #1a1a2e;
+    }
+
+    .btn-add:hover {
+      background: #00b8e6;
+    }
+
+    .btn-add:disabled {
+      background: #333;
+      color: #666;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Ports list */
+    .ports-list {
+      max-height: 120px;
+      overflow-y: auto;
+    }
+
+    .port-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: #16213e;
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+
+    .port-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .port-number {
+      font-weight: 600;
+      font-size: 14px;
+      color: #00d4ff;
+    }
+
+    .btn-remove {
+      background: transparent;
+      color: #ff6b6b;
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+
+    .btn-remove:hover {
+      background: rgba(255, 107, 107, 0.1);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 16px;
+      color: #666;
+      font-size: 12px;
+    }
+
+    /* Delay input */
+    .delay-config {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      background: #16213e;
+      border-radius: 6px;
+    }
+
+    .delay-config label {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .delay-config input {
+      width: 80px;
+      padding: 6px 8px;
+      text-align: center;
+    }
+
+    .delay-config span {
+      font-size: 12px;
+      color: #666;
+    }
+
+    /* Message */
+    .message {
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      text-align: center;
+      display: none;
+    }
+
+    .message.error {
+      background: rgba(255, 107, 107, 0.2);
+      color: #ff6b6b;
+      display: block;
+    }
+
+    .message.success {
+      background: rgba(0, 212, 255, 0.2);
+      color: #00d4ff;
+      display: block;
+    }
+
+    /* Feature colors */
+    .tab[data-tab="cache"] { }
+    .tab[data-tab="cors"].active { background: #ff9f43; }
+    .tab[data-tab="csp"].active { background: #ee5a24; }
+    .tab[data-tab="delay"].active { background: #a55eea; }
+
+    .feature-cors .section-title,
+    .feature-cors .port-number { color: #ff9f43; }
+    .feature-csp .section-title,
+    .feature-csp .port-number { color: #ee5a24; }
+    .feature-delay .section-title,
+    .feature-delay .port-number { color: #a55eea; }
+
+    .feature-cors .btn-add { background: #ff9f43; }
+    .feature-cors .btn-add:hover { background: #e68a2e; }
+    .feature-csp .btn-add { background: #ee5a24; }
+    .feature-csp .btn-add:hover { background: #d14d1e; }
+    .feature-delay .btn-add { background: #a55eea; }
+    .feature-delay .btn-add:hover { background: #8e4fd1; }
+
+    .feature-cors .toggle input:checked + .toggle-slider { background-color: #ff9f43; }
+    .feature-csp .toggle input:checked + .toggle-slider { background-color: #ee5a24; }
+    .feature-delay .toggle input:checked + .toggle-slider { background-color: #a55eea; }
+  </style>
+</head>
+<body>
+  <h1>Localhost Dev Tools</h1>
+
+  <div id="message" class="message"></div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="cache">Cache</button>
+    <button class="tab" data-tab="cors">CORS</button>
+    <button class="tab" data-tab="csp">CSP</button>
+    <button class="tab" data-tab="delay">Delay</button>
+  </div>
+
+  <!-- Cache Tab -->
+  <div id="cache-tab" class="tab-content active">
+    <p class="section-description">Disable browser cache for localhost ports</p>
+    <div class="input-group">
+      <input type="number" id="cachePortInput" placeholder="Port (e.g., 3000)" min="1" max="65535">
+      <button class="btn-add" id="cacheAddBtn">Add</button>
+    </div>
+    <div class="ports-list" id="cachePortsList"></div>
+  </div>
+
+  <!-- CORS Tab -->
+  <div id="cors-tab" class="tab-content feature-cors">
+    <div class="section-header">
+      <span class="section-title">CORS Bypass</span>
+      <label class="toggle">
+        <input type="checkbox" id="corsToggle">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <p class="section-description">Inject permissive CORS headers into responses</p>
+    <div class="input-group">
+      <input type="number" id="corsPortInput" placeholder="Port (e.g., 8080)" min="1" max="65535">
+      <button class="btn-add" id="corsAddBtn">Add</button>
+    </div>
+    <div class="ports-list" id="corsPortsList"></div>
+  </div>
+
+  <!-- CSP Tab -->
+  <div id="csp-tab" class="tab-content feature-csp">
+    <div class="section-header">
+      <span class="section-title">Disable CSP</span>
+      <label class="toggle">
+        <input type="checkbox" id="cspToggle">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <p class="section-description">Remove Content-Security-Policy headers</p>
+    <div class="input-group">
+      <input type="number" id="cspPortInput" placeholder="Port (e.g., 3000)" min="1" max="65535">
+      <button class="btn-add" id="cspAddBtn">Add</button>
+    </div>
+    <div class="ports-list" id="cspPortsList"></div>
+  </div>
+
+  <!-- Delay Tab -->
+  <div id="delay-tab" class="tab-content feature-delay">
+    <div class="section-header">
+      <span class="section-title">Network Delay</span>
+      <label class="toggle">
+        <input type="checkbox" id="delayToggle">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <p class="section-description">Add artificial latency to requests for testing</p>
+    <div class="delay-config">
+      <label>Delay:</label>
+      <input type="number" id="delayMsInput" placeholder="500" min="0" max="30000">
+      <span>ms</span>
+    </div>
+    <div class="input-group">
+      <input type="number" id="delayPortInput" placeholder="Port (e.g., 3000)" min="1" max="65535">
+      <button class="btn-add" id="delayAddBtn">Add</button>
+    </div>
+    <div class="ports-list" id="delayPortsList"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
