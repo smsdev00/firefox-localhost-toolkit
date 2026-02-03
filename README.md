@@ -73,7 +73,7 @@ The extension uses Firefox's `webRequest` API to intercept HTTP requests and res
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/localhost-toolkit.git
+git clone https://github.com/smsdev00/firefox-localhost-toolkit.git
 
 # Load in Firefox
 # 1. Open about:debugging
