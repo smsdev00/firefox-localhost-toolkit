@@ -212,7 +212,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   switch (message.action) {
     // Cache ports
     case 'getPorts':
-      return Promise.resolve(settings.cachePorts);
+      return browser.storage.local.get(STORAGE_KEYS.PORTS)
+        .then(result => result[STORAGE_KEYS.PORTS] || []);
 
     case 'addPort':
       if (!settings.cachePorts.includes(message.port)) {
@@ -232,10 +233,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     // CORS settings
     case 'getCorsSettings':
-      return Promise.resolve({
-        enabled: settings.corsEnabled,
-        ports: settings.corsPorts
-      });
+      return browser.storage.local.get([STORAGE_KEYS.CORS_ENABLED, STORAGE_KEYS.CORS_PORTS])
+        .then(result => ({
+          enabled: result[STORAGE_KEYS.CORS_ENABLED] || false,
+          ports: result[STORAGE_KEYS.CORS_PORTS] || []
+        }));
 
     case 'setCorsEnabled':
       return saveSetting(STORAGE_KEYS.CORS_ENABLED, message.enabled).then(() => true);
@@ -258,10 +260,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     // CSP settings
     case 'getCspSettings':
-      return Promise.resolve({
-        enabled: settings.cspEnabled,
-        ports: settings.cspPorts
-      });
+      return browser.storage.local.get([STORAGE_KEYS.CSP_ENABLED, STORAGE_KEYS.CSP_PORTS])
+        .then(result => ({
+          enabled: result[STORAGE_KEYS.CSP_ENABLED] || false,
+          ports: result[STORAGE_KEYS.CSP_PORTS] || []
+        }));
 
     case 'setCspEnabled':
       return saveSetting(STORAGE_KEYS.CSP_ENABLED, message.enabled).then(() => true);
@@ -284,11 +287,12 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     // Delay settings
     case 'getDelaySettings':
-      return Promise.resolve({
-        enabled: settings.delayEnabled,
-        delayMs: settings.delayMs,
-        ports: settings.delayPorts
-      });
+      return browser.storage.local.get([STORAGE_KEYS.DELAY_ENABLED, STORAGE_KEYS.DELAY_MS, STORAGE_KEYS.DELAY_PORTS])
+        .then(result => ({
+          enabled: result[STORAGE_KEYS.DELAY_ENABLED] || false,
+          delayMs: result[STORAGE_KEYS.DELAY_MS] || 0,
+          ports: result[STORAGE_KEYS.DELAY_PORTS] || []
+        }));
 
     case 'setDelayEnabled':
       return saveSetting(STORAGE_KEYS.DELAY_ENABLED, message.enabled).then(() => true);
@@ -314,7 +318,17 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     // Get all settings
     case 'getAllSettings':
-      return Promise.resolve(settings);
+      return browser.storage.local.get(Object.values(STORAGE_KEYS))
+        .then(result => ({
+          cachePorts: result[STORAGE_KEYS.PORTS] || [],
+          corsEnabled: result[STORAGE_KEYS.CORS_ENABLED] || false,
+          corsPorts: result[STORAGE_KEYS.CORS_PORTS] || [],
+          cspEnabled: result[STORAGE_KEYS.CSP_ENABLED] || false,
+          cspPorts: result[STORAGE_KEYS.CSP_PORTS] || [],
+          delayEnabled: result[STORAGE_KEYS.DELAY_ENABLED] || false,
+          delayMs: result[STORAGE_KEYS.DELAY_MS] || 0,
+          delayPorts: result[STORAGE_KEYS.DELAY_PORTS] || []
+        }));
 
     default:
       console.warn(`[Dev Tools] Unknown action: ${message.action}`);
